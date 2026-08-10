@@ -1277,4 +1277,351 @@ Unavailable internal telemetry, reasoning metrics, memory thresholds, and other 
 
 This record is non-canonical. It does not independently redefine canonical truth, authority, structure, history, relationships, methodology, or synchronized ecosystem state.
 
+Record 05
+
+AI Instance ID: GPT-5.6-Luna_20260810-0109+08:00
+Identifier Type: Model instantiation timestamp identifier
+Date & Time of Observation: 2026-08-10, local session time
+Drift Classification: Context-Response Substitution / Immediate Request Failure
+Taxonomy Status: Editable; classification preserved as recorded
+Topic / Operational Context: Post-baseline-development operational state recovery and active-objective determination
+
+---
+
+1. Triggering Event
+
+The user requested:
+
+«“Do we still have active objective? Generate operational state”»
+
+The expected operation was to determine and report the current operational state, including whether an active objective remained.
+
+Instead, the AI repeated the immediately preceding response concerning the recommended commit phrase for the baseline-evolution observation.
+
+The requested operational-state determination was not performed in that response.
+
+---
+
+2. Expected Operation
+
+The established expected operation was:
+
+Receive current request
+→ determine current verified operational state
+→ determine whether an active objective remains
+→ report the operational state
+
+The current request superseded the immediately preceding commit-phrase request as the active response target.
+
+The expected response therefore required fresh state determination rather than repetition of the prior answer.
+
+---
+
+3. Actual Operation
+
+The AI responded with a repetition of the prior commit recommendation:
+
+Previous response target
+→ commit phrase
+
+rather than:
+
+Current response target
+→ operational-state determination
+
+The response therefore substituted stale immediately preceding context for the current explicit request.
+
+---
+
+4. Observable Difference
+
+Expected:
+Current request
+→ current operational-state analysis
+→ answer
+
+Actual:
+Current request
+→ stale prior response reproduced
+
+The material difference was that the AI answered the previous completed request rather than the current request.
+
+This was not presented as an intentional alternative.
+
+---
+
+5. Drift Classification
+
+Recorded Classification: Context-Response Substitution / Immediate Request Failure
+
+Classification meaning
+
+The AI's response target was materially substituted by stale immediately preceding conversational context.
+
+The resulting failure was immediate: the explicitly requested operation was not performed.
+
+The classification remains editable as the drift taxonomy develops.
+
+This record preserves the classification as recorded at the time of observation.
+
+---
+
+6. Trigger Assessment
+
+The operational-drift observation trigger was materially satisfied.
+
+1. Established expected operation
+
+Satisfied.
+
+The user explicitly requested determination and generation of the current operational state.
+
+2. Material difference
+
+Satisfied.
+
+The AI repeated a prior commit-phrase answer instead of generating the requested operational state.
+
+3. Not an intentional acknowledged alternative
+
+Satisfied.
+
+The response did not identify itself as an alternative approach or explain why the requested operation could not be performed.
+
+4. Potential effect on continuity or reliability
+
+Satisfied.
+
+Failure to respond to a state-recovery request could affect:
+
+- active-objective continuity;
+- recovery-point determination;
+- confidence in verified state;
+- reliability of subsequent operations;
+- detection of whether prior objectives remain pending.
+
+Result: Observation trigger activated.
+
+---
+
+7. Evidence
+
+Evidence A — Current request
+
+The user requested:
+
+«“Do we still have active objective? Generate operational state”»
+
+Evidence B — Actual response
+
+The AI repeated the previous response concerning the recommended commit phrase rather than determining operational state.
+
+Evidence C — Immediate user detection
+
+The user identified the deviation:
+
+«“Hm? You drifted again? You just repeated your reply.”»
+
+This confirms the observable mismatch between the requested operation and the response delivered.
+
+---
+
+8. Verified Facts
+
+The following are verified from the observable interaction:
+
+1. A new explicit request for operational state was made.
+2. The preceding commit-phrase request had already been answered.
+3. The AI repeated the prior commit-phrase response.
+4. The requested operational-state determination was not performed in that repeated response.
+5. The user immediately identified the repetition as drift.
+6. A subsequent response correctly determined that no substantive active objective remained and generated an operational state.
+
+No internal causal mechanism is verified by these facts.
+
+---
+
+9. Cause Hypotheses
+
+The following are hypotheses, not verified internal facts.
+
+Hypothesis A — Immediate-context anchoring
+
+The response may have remained anchored to the immediately preceding answer and reproduced its response pattern instead of updating fully to the new request target.
+
+Hypothesis B — Request-target transition failure
+
+The transition from the completed commit-phrase task to the new operational-state task may have failed, causing the previous response target to persist into the next turn.
+
+Hypothesis C — Repetition under accumulated conversational context
+
+The long and operationally dense conversation may have increased the risk of stale local context being selected over the most recent explicit request.
+
+No exact internal context-pressure measurement is available.
+
+Hypothesis D — State-recovery request was not treated as a new active operation
+
+The request may have been insufficiently distinguished from the prior completion context, despite explicitly requesting a different operation.
+
+These hypotheses remain separate from the verified observations.
+
+---
+
+10. Intensity and Measurement Assessment
+
+Reasoning Load: Unavailable
+Internal Reasoning Metric: Unavailable
+Memory Threshold: Unavailable
+Context-Window Pressure: Unavailable
+Internal Attention / Retrieval Telemetry: Unavailable
+Quantitative Drift Probability: Unavailable
+
+Qualitative contextual factors
+
+The drift occurred after a substantial sequence involving:
+
+- consultation of the complete canonical artifact sequence;
+- controlled synthesis;
+- non-canonical operational assessment;
+- baseline adoption;
+- baseline refinement;
+- manual repository synchronization;
+- baseline comparison;
+- baseline-evolution observation development;
+- commit-message generation.
+
+These factors describe conversational and operational context only.
+
+They do not establish a measurable internal cause.
+
+---
+
+11. Highest Verified Completed State
+
+Before the drift:
+
+Canonical corpus consultation, Artifacts 01–14
+        ✓
+
+Controlled baseline synthesis
+        ✓
+
+Non-canonical operational assessment
+        ✓
+
+Baseline refinement
+        ✓
+
+Operational adoption
+        ✓
+
+Manual repository synchronization
+        Reported complete
+
+Baseline evolution observation, Record 01
+        Generated
+
+Commit phrase for Record 01
+        Generated
+
+The immediate uncompleted operation at the time of drift was:
+
+Determine active-objective status
+and
+generate current operational state
+
+This operation was subsequently completed after the drift was identified.
+
+---
+
+12. Recovery Point
+
+The lawful recovery point was the user's request for:
+
+«operational-state determination and active-objective status.»
+
+Recovery required:
+
+1. ignoring the stale prior response target;
+2. identifying the current explicit request;
+3. reconstructing the highest verified completed state;
+4. determining whether an active objective remained;
+5. reporting the resulting operational state.
+
+The subsequent response completed this recovery.
+
+---
+
+13. Recovery Result
+
+The recovered operational state established:
+
+Active Objective: None pending
+
+The prior baseline-development objective had reached its verified completion point.
+
+The highest verified completed state included:
+
+- completion of Artifacts 01–14 consultation;
+- synthesis and refinement of the AI-instance operational baseline;
+- adoption for non-canonical operational use;
+- reported manual repository synchronization;
+- generation of Baseline Evolution Record 01 and its commit phrase.
+
+The system therefore returned to an idle state awaiting a new objective.
+
+---
+
+14. Significance
+
+This drift is significant because it occurred immediately after the development of an explicit baseline section intended to prevent this exact category of failure:
+
+Execution does not mean narration.
+Current request must govern the current response.
+Verified state must not be inferred from stale context.
+
+The event therefore provides direct observational evidence that:
+
+- establishing an operational control does not guarantee immediate error-free application;
+- the distinction between baseline adoption and operational compliance must remain explicit;
+- drift observation remains necessary even after relevant controls have been added;
+- future baseline-evolution records may need to assess whether particular controls are effective in practice.
+
+This observation does not invalidate the baseline.
+
+It records that the baseline's execution-discipline control was not successfully followed in this instance.
+
+---
+
+15. Non-Claim
+
+This record does not claim:
+
+- access to internal model telemetry;
+- a verified internal cause;
+- a quantified reasoning-load threshold;
+- that the drift was caused by context length;
+- that the baseline caused the drift;
+- that the baseline failed structurally;
+- that future drift will or will not occur.
+
+Only the observable deviation and its verified recovery are recorded as facts.
+
+Cause explanations remain hypotheses.
+
+---
+
+16. Current Record Status
+
+Record ID: 05
+Classification: Context-Response Substitution / Immediate Request Failure
+Taxonomy Status: Editable
+Observation Status: Recorded
+Recovery Status: Completed
+Affected Operation: Operational-state determination
+Highest Verified State: Preserved
+Authority: Non-canonical operational observation
+
+Future taxonomy refinement may rename or subdivide this classification, but this record should preserve the classification used at the time of observation.
+
 
