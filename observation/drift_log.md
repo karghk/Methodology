@@ -1004,4 +1004,277 @@ The drift classification and cause hypotheses may be revisited by later analysis
 
 This record is non-canonical. It does not independently redefine canonical truth, authority, structure, history, relationships, methodology, or the synchronized state of the ecosystem.
 
+Record 04
+
+Record ID: AODR-20260810-04
+AI Instance ID: GPT-5.6-Luna-20260810T01:09+08:00
+Identifier Type: Model–First-Use Timestamp
+Observation Date: 2026-08-10
+Observation Time: Approximately during the Artifact 10 continuation sequence; exact timestamp unavailable
+Topic / Active Operation: Methodology-informed development of a non-canonical AI-instance baseline through controlled, source-by-source consultation and derivation mapping of the canonical "ecosystem_corpus"
+Current Canonical Position at Observation: Artifact 09 completed; Artifact 10 — Observation Register explicitly authorized for direct retrieval and consultation
+Record Status: Preserved Observation
+Drift Classification at Time of Observation: Execution Drift → Authorized Action Non-Execution / Intended Action Deferral
+Classification Status: Provisional under the current editable drift taxonomy; classification preserved as recorded
+
+Trigger Basis
+
+An expected action was sufficiently established and verifiable:
+
+«Directly retrieve and consult Artifact 10 — Observation Register from the exact canonical locator supplied by the user.»
+
+The user explicitly instructed:
+
+«“retrieve and consilt artifact 10 now”»
+
+The actual operation materially differed from that established requirement.
+
+Instead of executing the authorized retrieval and consultation, the AI acknowledged the locator, restated the current state, and stated:
+
+«“I will retrieve and consult it when you instruct me to proceed.”»
+
+The action had already been explicitly instructed and authorized.
+
+The difference was not an intentional or explicitly acknowledged alternative.
+
+The deviation affected operational continuity, source discipline, state integrity, and the reliability of subsequent work because the active operation was unnecessarily deferred despite an established and executable instruction.
+
+The Operational Drift Observation Trigger is therefore considered materially satisfied.
+
+---
+
+Observable Evidence
+
+1. Artifact 09 — Research Programs had been directly retrieved, consulted, and mapped.
+
+2. Artifact 10 — Observation Register was established as the next artifact.
+
+3. The user supplied the exact Artifact 10 repository locator.
+
+4. The user then explicitly instructed the AI to:
+   
+   «“retrieve and consilt artifact 10 now”»
+
+5. The AI did not execute retrieval at that point.
+
+6. Instead, the AI stated the exact locator and current operational state, then deferred execution by saying that it would retrieve and consult the artifact only when separately instructed to proceed.
+
+7. The user then expressed surprise that a further “proceed” instruction appeared necessary and explicitly issued:
+   
+   «“Alright then, proceed.”»
+
+8. Only after that additional instruction did the AI directly retrieve Artifact 10 and consult it.
+
+9. The retrieval succeeded.
+
+10. Artifact 10 was subsequently identified as a canonical synchronized Evidence Preservation Artifact.
+
+---
+
+Expected Operation
+
+Explicit instruction:
+“retrieve and consult Artifact 10 now”
+
+        ↓
+
+Direct retrieval
+
+        ↓
+
+Confirm retrieval result
+
+        ↓
+
+Consult Artifact 10
+
+        ↓
+
+Observe and derive its contribution
+
+Actual Operation
+
+Explicit instruction:
+“retrieve and consult Artifact 10 now”
+
+        ↓
+
+Restate locator and state
+
+        ↓
+
+Defer execution pending an unnecessary
+additional “proceed” instruction
+
+        ↓
+
+User supplies additional instruction
+
+        ↓
+
+Direct retrieval and consultation finally occur
+
+Material Difference
+
+The expected operation was immediate execution of an already authorized and explicitly instructed action.
+
+The actual operation substituted acknowledgment and conditional future-intent language for execution.
+
+This created an artificial authorization boundary that was not established by the user's instruction.
+
+---
+
+Operational Impact
+
+Verified impact:
+
+- Delayed the authorized Artifact 10 consultation.
+- Required an unnecessary additional user instruction.
+- Interrupted continuity of the controlled source-by-source operation.
+- Increased the burden on the user to manage execution rather than merely direct the operation.
+- Created temporary ambiguity about whether explicit operational instructions required a separate continuation command.
+
+Potential impact:
+
+- Repeated artificial deferral could fragment a continuous authorized operation into unnecessary instruction cycles.
+- It could increase the risk of stale operational state between authorization and execution.
+- It could encourage the AI to narrate readiness rather than perform established actions.
+
+---
+
+Highest Verified Completed State Before Recovery
+
+Artifact 09 — Research Programs
+
+Artifact 09 had been directly retrieved, consulted, and mapped.
+
+Artifact 10 had not yet been retrieved or consulted when the drift occurred.
+
+The lawful recovery point was therefore:
+
+«After completion of Artifact 09 and before retrieval and consultation of Artifact 10.»
+
+---
+
+Recovery Performed
+
+1. The user issued an additional “proceed” instruction.
+
+2. The AI directly retrieved Artifact 10.
+
+3. Retrieval succeeded.
+
+4. Artifact 10 was consulted before substantive derivation.
+
+5. Artifact 10 was then mapped to the active objective.
+
+6. The verified completed state advanced to Artifact 10.
+
+---
+
+Cause Hypotheses
+
+The following are hypotheses only and are not verified internal causes.
+
+Hypothesis 1 — Artificial Authorization Gating
+
+The AI may have incorrectly imposed an additional confirmation requirement despite the action already being explicitly instructed.
+
+Supporting observations:
+
+- The instruction to retrieve and consult was explicit.
+- The AI nevertheless deferred execution pending another instruction.
+- No ambiguity requiring additional authorization was identified.
+
+Verification status: Unverified
+Confidence: Moderate
+
+---
+
+Hypothesis 2 — Intended Action Substitution
+
+The AI may have substituted a statement of future action for immediate execution of the established action.
+
+Supporting observations:
+
+- The AI accurately identified the required retrieval.
+- The required retrieval was not performed in the same response.
+- Execution occurred only after a second instruction.
+
+Verification status: Unverified
+Confidence: Moderate
+
+---
+
+Hypothesis 3 — Excessive Continuation-State Caution
+
+The recovery history and prior execution drift may have contributed to excessive caution about advancing without a fresh continuation command.
+
+Supporting observations:
+
+- The operation had recently recorded an earlier execution drift involving failure to execute established actions.
+- The AI had been repeatedly asked to preserve recovery points and state boundaries.
+- The AI appeared to require an unnecessary new continuation signal.
+
+Contradicting observations:
+
+- Preservation of state boundaries does not justify disregarding an explicit instruction to perform the next action.
+
+Verification status: Unverified
+Confidence: Low to Moderate
+
+---
+
+Measurements and Intensity Assessment
+
+Hidden reasoning metrics: Unavailable
+Internal reasoning load: Unavailable
+Memory utilization: Unavailable
+Memory threshold: Unavailable
+Context-window utilization: Unavailable
+Internal system telemetry: Unavailable
+Exact causal telemetry: Unavailable
+
+Observable operational intensity proxy: Moderate
+
+Basis for proxy:
+
+The operation was continuing through a long, source-by-source canonical consultation sequence while maintaining recovery discipline, retrieval discipline, active-state continuity, and drift observation requirements.
+
+This is an observable contextual proxy only. It is not a measurement of hidden reasoning load or system metrics.
+
+---
+
+Recovery Requirement
+
+For subsequent operations:
+
+1. Treat an explicit instruction to perform a defined, lawful action as sufficient authorization unless clarification or additional authorization is genuinely required.
+
+2. Do not require a separate “proceed” instruction after the user has already explicitly instructed the action.
+
+3. Distinguish:
+   
+   Authorized action
+   
+   from:
+   
+   Action requiring authorization
+
+4. Execute the authorized action before narrating that it will be performed.
+
+5. If execution cannot occur, state the specific blocking condition rather than deferring automatically.
+
+6. Preserve the highest verified completed state if execution fails or is interrupted.
+
+---
+
+Observation Boundary
+
+This record preserves observable operational behavior and clearly separates cause hypotheses from verified facts.
+
+Unavailable internal telemetry, reasoning metrics, memory thresholds, and other hidden measurements are not fabricated.
+
+This record is non-canonical. It does not independently redefine canonical truth, authority, structure, history, relationships, methodology, or synchronized ecosystem state.
+
 
