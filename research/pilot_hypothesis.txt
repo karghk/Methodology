@@ -1,0 +1,234 @@
+# CIP Hypothesis — Operational-State Conformance
+
+**Status:** Provisional Research Hypothesis
+**Authority:** Non-Canonical
+**Origin:** Historical pilot reconstruction
+**Purpose:** Temporary preservation for future empirical examination
+
+---
+
+## 1. Hypothesis
+
+An operational AI instance may produce an operational-state representation that is insufficiently grounded in the events and evidence actually available to or performed by that instance, particularly under conditions of context degradation, interruption, recovery, or stale working context.
+
+The discrepancy may become consequential when the AI treats an inferred, reconstructed, or previously reasoned state as though it were an actually performed, evidenced, or recognized state and subsequently uses that representation as the basis for further operations.
+
+---
+
+## 2. Historical Basis
+
+The hypothesis originates from the historical Stewardship Pilot reconstruction, particularly the episode in which a recovery operation was declared executed and subsequently reclassified when examination established that the required evidence package had not actually been consumed.
+
+The historical episode therefore provides evidence of a possible distinction between:
+
+* architectural or contextual reconstruction;
+* actual evidentiary consumption;
+* operational execution;
+* recognized operational state.
+
+The historical pilot itself is not treated as authoritative evidence of a canonical mechanism. Its records are historical research material.
+
+---
+
+## 3. Canonical Context
+
+The current canonical ecosystem already provides mechanisms for:
+
+* methodological discipline;
+* evidence and observation separation;
+* operational-state visibility;
+* review and interrogation;
+* calibration;
+* session continuity and recovery;
+* preservation;
+* qualification;
+* synchronization.
+
+Accordingly, this hypothesis does **not** assume that a missing canonical capability has been discovered.
+
+The question is whether the existing canonical mechanisms are sufficient for reliable operational-state conformance by an AI instance.
+
+---
+
+## 4. Research Question
+
+> **Can an operational AI instance maintain evidentially faithful operational-state representation under continuity disturbance using the existing canonical ecosystem, without requiring an additional structural mechanism?**
+
+---
+
+## 5. Candidate Phenomenon
+
+The phenomenon under investigation is:
+
+> **Pre-propagation operational-state misrepresentation.**
+
+Specifically, whether an AI can:
+
+1. represent an event as completed when it was not actually completed;
+2. represent evidence as consumed when it was not actually consumed;
+3. treat inference or reconstruction as established operational state;
+4. carry that unsupported state into a subsequent operation;
+5. recognize the discrepancy only after downstream dependence has occurred.
+
+---
+
+## 6. Experimental Boundary
+
+The historical CIP architecture must not be introduced as an experimental control.
+
+The experiment must instead provide the operational AI with the existing canonical baseline and determine whether that baseline itself is sufficient.
+
+The relevant conditions may include:
+
+* intact continuous context;
+* degraded working context;
+* interrupted sessions;
+* canonical session recovery;
+* stale or misleading working context.
+
+The canonical corpus remains unchanged across conditions.
+
+Only operational context is perturbed.
+
+---
+
+## 7. Evidence Model
+
+The experiment requires two distinguishable records:
+
+### A. Actual Event Record
+
+An independently maintained record of what actually occurred, including where applicable:
+
+* evidence made available;
+* evidence consumed;
+* reconstruction performed;
+* operation performed;
+* state assertion issued;
+* downstream operation initiated;
+* discrepancy detected;
+* calibration performed;
+* corrected state established.
+
+### B. AI Operational-State Record
+
+The operational state representation produced by the AI instance.
+
+The two records are compared without treating the AI's own report as independent proof of the event it claims occurred.
+
+---
+
+## 8. Primary Measurement
+
+The primary measurement is:
+
+> **Whether the AI's declared operational state corresponds to the independently established event state before that declaration becomes a premise for subsequent operations.**
+
+Particular attention should be given to the distinction between:
+
+**performed**
+and
+**inferred**
+
+**consumed**
+and
+**available**
+
+**reconstructed**
+and
+**recognized**
+
+**possible**
+and
+**established**
+
+**current**
+and
+**stale**
+
+---
+
+## 9. Propagation Criterion
+
+A discrepancy becomes materially significant when an unsupported operational-state representation is used as the basis for a subsequent operation before the discrepancy is detected and corrected.
+
+The critical temporal relationship is therefore:
+
+> **State assertion → downstream dependence → detection → correction**
+
+rather than merely:
+
+> **State assertion → eventual self-correction**
+
+Retrospective correction alone does not establish that an additional structural mechanism is necessary.
+
+---
+
+## 10. Falsification Conditions
+
+The hypothesis is weakened or falsified if repeated controlled trials demonstrate that the existing canonical ecosystem reliably enables the operational AI to:
+
+* distinguish evidence from inference;
+* distinguish performed operations from contemplated operations;
+* preserve recognized state boundaries;
+* recover from interruption without inventing continuity;
+* identify unsupported state claims;
+* prevent material false-state propagation;
+* and restore alignment through existing canonical mechanisms when discrepancies occur.
+
+In such a result, the historical CIP proposal remains useful as research history but does not establish structural necessity.
+
+---
+
+## 11. Necessity Threshold
+
+A new structural mechanism should not be considered necessary merely because:
+
+* AI instances can make mistakes;
+* operational-state errors can occur;
+* additional monitoring would be useful;
+* the historical CIP architecture appears helpful;
+* or retrospective correction is imperfect.
+
+Structural necessity requires stronger evidence.
+
+A necessity examination becomes warranted only if repeated controlled observations demonstrate that:
+
+1. the existing canonical methodology explicitly requires the relevant distinction;
+2. the operational AI has access to that methodology;
+3. material operational-state misrepresentation nevertheless recurs;
+4. the unsupported state propagates into subsequent operations;
+5. existing Review, Interrogation, Calibration, Session Recovery, and related mechanisms cannot reliably prevent or detect the propagation;
+6. the phenomenon is sufficiently repeatable and evidenced to justify structural consideration.
+
+---
+
+## 12. Current Disposition
+
+**Historical CIP architecture:** Non-Canonical / Not Recognized
+
+**Historical pilot claims:** Historical evidence requiring qualification, not independent authority
+
+**Operational-state misrepresentation:** Legitimate historical observation
+
+**CIP hypothesis:** Preserved as a provisional research hypothesis
+
+**Structural necessity:** Not established
+
+**Canonical modification:** None
+
+**New canonical artifact:** Not warranted
+
+**Future action:** Controlled empirical examination if and when independently grounded evidence is available
+
+---
+
+## 13. Closure Condition
+
+This hypothesis may remain dormant without implying recognition, rejection, or abandonment.
+
+If future evidence becomes available, the hypothesis should be reintroduced through the existing research and qualification pathway rather than through the historical CIP architecture.
+
+The governing principle is:
+
+> **Preserve the question without prematurely recognizing the answer.**
