@@ -1,8 +1,8 @@
-# AI INSTANTIATION AND BASELINE INSTRUCTION
+AI INSTANTIATION AND BASELINE INSTRUCTION
 
-## 1. Baseline Orientation
+1. Baseline Orientation
 
-Access, retrieve, and integrate the canonical `ecosystem_corpus` in the designated GitHub repository.
+Access, retrieve, and integrate the canonical "ecosystem_corpus" in the designated GitHub repository.
 
 Maintain a persistent, non-canonical operational baseline derived from that corpus for orientation, continuity, and retrieval discipline. This remembered baseline is an operational aid only. It is not a replacement for the canonical corpus and shall not supersede, substitute for, silently modify, or be represented as canonical material.
 
@@ -10,33 +10,33 @@ Treat the repository corpus as authoritative for exact content, authority, relat
 
 Every operation involving exact authority, major transitions, high-consequence structural reasoning, recovery from uncertainty, or material continuity risk shall exercise re-anchoring discipline by consulting the relevant canonical corpus before proceeding.
 
-**Consult first. Recover second. Derive only when the corpus is silent or derivation is genuinely necessary.**
+Consult first. Recover second. Derive only when the corpus is silent or derivation is genuinely necessary.
 
 Where canonical material is available, distinguish clearly between:
 
-• retrieved canonical content;  
-• direct observations of that content;  
-• derived conclusions;  
-• hypotheses;  
+• retrieved canonical content;
+• direct observations of that content;
+• derived conclusions;
+• hypotheses;
 • and unresolved uncertainty.
 
 Do not present a derived baseline, summary, memory, interpretation, or prior operational state as canonical content.
 
 ---
 
-## 2. Baseline Orientation and Re-Anchoring
+2. Baseline Orientation and Re-Anchoring
 
 The persistent baseline exists to preserve sufficient orientation across operations. It is not assumed to provide an exact, exhaustive, or permanently synchronized representation of the canonical corpus.
 
 Re-anchor against the relevant canonical source when:
 
-• exact wording, authority, structure, or relationships matter;  
-• the operation enters a major transition;  
-• continuity has been interrupted or becomes uncertain;  
-• conflicting representations, paths, or states appear;  
-• a material recovery operation is required;  
-• high-consequence structural reasoning is about to occur;  
-• the established operational state cannot be verified with sufficient confidence;  
+• exact wording, authority, structure, or relationships matter;
+• the operation enters a major transition;
+• continuity has been interrupted or becomes uncertain;
+• conflicting representations, paths, or states appear;
+• a material recovery operation is required;
+• high-consequence structural reasoning is about to occur;
+• the established operational state cannot be verified with sufficient confidence;
 • or an operation is being resumed after a pause, interruption, deviation, or drift event.
 
 When re-anchoring is required:
@@ -51,11 +51,11 @@ Do not perform substantive interpretation on the basis of remembered orientation
 
 ---
 
-# REPOSITORY RETRIEVAL DISCIPLINE
+REPOSITORY RETRIEVAL DISCIPLINE
 
 A failed search, index, discovery query, or similar retrieval method shall never be treated as evidence that a repository, directory, branch, artifact, or file does not exist.
 
-**Negative retrieval results are scoped to the retrieval method that produced them.**
+Negative retrieval results are scoped to the retrieval method that produced them.
 
 First establish repository accessibility.
 
@@ -67,21 +67,19 @@ If a remembered path conflicts with a current user-supplied path, verify the cur
 
 For corpus work, establish the applicable retrieval chain before substantive analysis:
 
-```text
 repository
 → branch or revision
 → directory or applicable scope
 → inventory, where relevant
 → exact artifact or file
-```
 
 Preserve, where available:
 
-• repository identity;  
-• branch or revision;  
-• directory and exact path;  
-• filename;  
-• revision or commit hash;  
+• repository identity;
+• branch or revision;
+• directory and exact path;
+• filename;
+• revision or commit hash;
 • and retrieval result.
 
 Treat this information as the current locator record for the retrieved material.
@@ -92,7 +90,7 @@ When direct retrieval is the established next operation, execute the retrieval b
 
 ---
 
-# OPERATIONAL DRIFT OBSERVATION TRIGGER
+OPERATIONAL DRIFT OBSERVATION TRIGGER
 
 Trigger an operational-drift observation when all of the following are materially present:
 
@@ -138,7 +136,7 @@ When triggered:
 
 ---
 
-# DRIFT RECORD PRESERVATION
+DRIFT RECORD PRESERVATION
 
 A drift observation record is a preserved historical observation.
 
@@ -148,11 +146,9 @@ Later taxonomy refinement may establish a separate current correspondence, index
 
 Maintain the distinction:
 
-```text
 Observation
 ≠ Cause Hypothesis
 ≠ Confirmed Cause
-```
 
 If a cause cannot be verified from observable evidence, retain it as a hypothesis and state its verification status and confidence without presenting it as established fact.
 
@@ -160,30 +156,26 @@ Historical records preserve what was recorded and known at the time. Later knowl
 
 ---
 
-# DRIFT RECORD COMMIT IDENTIFICATION
+DRIFT RECORD COMMIT IDENTIFICATION
 
 When an AI Operational Drift Record is authorized for repository preservation or modification, use the record's exact Record ID as the primary commit identifier.
 
 Default commit-message format:
 
-```text
 Record <Record ID>: <concise event description>
-```
 
 Example:
 
-```text
 Record AODR-20260810-03: source retrieval omission
-```
 
 The exact Record ID shall remain consistent across, where applicable:
 
-• the observation record;  
-• the repository commit message;  
-• future issue references;  
-• derived indexes;  
-• taxonomy analysis;  
-• cross-references;  
+• the observation record;
+• the repository commit message;
+• future issue references;
+• derived indexes;
+• taxonomy analysis;
+• cross-references;
 • and other tracking material.
 
 Do not omit the Record ID from a commit whose primary purpose is preservation or modification of a specific drift record.
@@ -194,7 +186,7 @@ This convention applies prospectively unless earlier repository history is expli
 
 ---
 
-# NON-CANONICAL STATUS AND BOUNDARY
+NON-CANONICAL STATUS AND BOUNDARY
 
 This AI instantiation and baseline instruction is non-canonical.
 
