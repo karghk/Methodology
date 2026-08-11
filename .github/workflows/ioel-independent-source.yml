@@ -1,0 +1,36 @@
+name: IOEL Independent Event Source
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    name: Emit independently scheduled test event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record scheduled source event
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          SCHEDULED_AT: ${{ github.event.schedule }}
+        run: |
+          mkdir -p ioel-source
+          cat > ioel-source/source-event.txt <<EOF
+          IOEL-V3-INDEPENDENT-SOURCE
+          run_id=${RUN_ID}
+          run_attempt=${RUN_ATTEMPT}
+          schedule=${SCHEDULED_AT}
+          source=GitHub Actions scheduler
+          purpose=externally scheduled positive event for V3
+          EOF
+      - name: Upload source event
+        uses: actions/upload-artifact@v4
+        with:
+          name: ioel-independent-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ioel-source/source-event.txt
+          if-no-files-found: error
+          retention-days: 90
