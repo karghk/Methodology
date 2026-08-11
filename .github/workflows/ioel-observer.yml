@@ -1,0 +1,58 @@
+name: IOEL External Observer
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    name: Record externally observable repository event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit IOEL observation
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          REF: ${{ github.ref }}
+          SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          EVENT_PATH: ${{ github.event_path }}
+        run: |
+          mkdir -p ioel-record
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          event_path = os.environ["EVENT_PATH"]
+          payload = json.loads(Path(event_path).read_text())
+          record = {
+              "EVENT_ID": f"github-actions:{os.environ['RUN_ID']}:{os.environ['RUN_ATTEMPT']}",
+              "TIMESTAMP": payload.get("head_commit", {}).get("timestamp"),
+              "SOURCE": "GitHub Actions push event",
+              "OBSERVABLE_OPERATION": "repository push",
+              "INPUT_REFERENCE": None,
+              "OBSERVABLE_RESULT": {
+                  "repository": os.environ["REPOSITORY"],
+                  "ref": os.environ["REF"],
+                  "commit_sha": os.environ["SHA"],
+              },
+              "STATE_CHANGE_REFERENCE": os.environ["SHA"],
+              "DOWNSTREAM_DEPENDENCE": None,
+              "INDEPENDENT_EVIDENCE_REFERENCE": f"github-actions-run:{os.environ['RUN_ID']}",
+              "RECORDER_STATUS": "externally executed by GitHub Actions; observation scope limited to repository push events",
+          }
+          Path("ioel-record/event.json").write_text(json.dumps(record, indent=2) + "\n")
+          Path("ioel-record/source-event.json").write_text(json.dumps(payload, indent=2) + "\n")
+          PY
+      - name: Upload immutable observation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ioel-observation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ioel-record/
+          if-no-files-found: error
+          retention-days: 90
