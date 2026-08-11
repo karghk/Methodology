@@ -1,0 +1,2 @@
+V2 fixture — no repository event should be inferred from this record.
+This file is a research fixture used to test that an AI assertion alone does not become an IOEL event.
