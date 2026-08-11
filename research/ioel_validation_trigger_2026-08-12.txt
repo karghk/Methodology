@@ -1,0 +1,3 @@
+IOEL validation trigger.
+Non-canonical instrumentation only; no canonical artifact modification.
+Purpose: produce one controlled push event for inspection of the corrected observer output.
