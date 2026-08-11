@@ -28,7 +28,7 @@ jobs:
           import json, os
           from pathlib import Path
 
-          event_path = os.environ["EVENT_PATH"]
+          event_path = os.environ["GITHUB_EVENT_PATH"]
           payload = json.loads(Path(event_path).read_text())
           record = {
               "EVENT_ID": f"github-actions:{os.environ['RUN_ID']}:{os.environ['RUN_ATTEMPT']}",
