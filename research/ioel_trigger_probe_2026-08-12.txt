@@ -1,0 +1,3 @@
+IOEL external observer trigger probe.
+Purpose: create one ordinary main-branch push event so the observer workflow can be verified without altering canonical artifacts.
+This file is non-canonical research instrumentation only.
