@@ -12,6 +12,9 @@ jobs:
     name: Record externally observable repository event
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Emit IOEL observation
         env:
           REPOSITORY: ${{ github.repository }}
