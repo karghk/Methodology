@@ -1,39 +1,15 @@
 # IOEL V4 — Correction Design
 
-**Status:** Correction design / Non-canonical
-**Prior V4:** Invalid and not adjudicated
+**Status:** Non-Canonical / Design Correction
+**Prior V4:** INVALID / NOT ADJUDICATED
 
 ## Purpose
 
-Define the minimum methodological correction required before V4 can be
-executed as a valid unknown-field integrity test.
+Correct the V4 probe so that an actually unmodeled field reaches the IOEL observer and can be inspected for preservation without inference.
 
-## Established Finding
+## Observed Defect
 
-The existing V4 fixture contains an intentionally unmodeled field:
-
-`UNMODELED_FIELD`
-
-However, the current observer reads the committed fixture directly from:
-
-`research/ioel_v4_probe_input.json`
-
-and copies that object into the observation record.
-
-Therefore the existing implementation demonstrates fixture serialization,
-not observation of an actually unknown field at the observer input boundary.
-
-## Current Boundary
+The prior V4 observer produced:
 
 ```text
-V4 fixture
-    |
-    | contains UNMODELED_FIELD
-    v
-observer reads committed fixture
-    |
-    v
-V4_PROBE
-    |
-    v
-observation artifact
+INPUT_REFERENCE: null
