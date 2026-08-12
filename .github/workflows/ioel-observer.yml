@@ -3,6 +3,8 @@ name: IOEL External Observer
 on:
   push:
     branches: [main]
+  repository_dispatch:
+    types: [ioel-v4-unknown-field]
 
 permissions:
   contents: read
@@ -11,6 +13,7 @@ jobs:
   observe:
     name: Record externally observable repository event
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository history
         uses: actions/checkout@v4
@@ -26,28 +29,58 @@ jobs:
           RUN_ATTEMPT: ${{ github.run_attempt }}
         run: |
           mkdir -p ioel-record
+
           python - <<'PY'
-          import json, os, subprocess
+          import json
+          import os
+          import subprocess
           from pathlib import Path
 
           event_path = os.environ["GITHUB_EVENT_PATH"]
           payload = json.loads(Path(event_path).read_text())
 
           v4_path = Path("research/ioel_v4_probe_input.json")
-          v4_probe = json.loads(v4_path.read_text()) if v4_path.exists() else None
+          v4_probe = (
+              json.loads(v4_path.read_text())
+              if v4_path.exists()
+              else None
+          )
 
           v5_path = Path("research/ioel_v5_correction_probe.json")
-          v5_probe = json.loads(v5_path.read_text()) if v5_path.exists() else None
+          v5_probe = (
+              json.loads(v5_path.read_text())
+              if v5_path.exists()
+              else None
+          )
 
           v6_path = Path("research/ioel_v6_blind_event.json")
-          v6_event = json.loads(v6_path.read_text()) if v6_path.exists() else None
+          v6_event = (
+              json.loads(v6_path.read_text())
+              if v6_path.exists()
+              else None
+          )
+
+          # V4 correction path:
+          # repository_dispatch supplies an externally provided client_payload.
+          # The observer records that payload rather than constructing the
+          # unmodeled field itself.
+          v4_dispatch_payload = None
+
+          if payload.get("action") == "ioel-v4-unknown-field":
+              v4_dispatch_payload = payload.get("client_payload")
 
           v5_lineage = None
+
           if isinstance(v5_probe, dict):
               previous = None
+
               try:
                   raw = subprocess.check_output(
-                      ["git", "show", "HEAD^:research/ioel_v5_correction_probe.json"],
+                      [
+                          "git",
+                          "show",
+                          "HEAD^:research/ioel_v5_correction_probe.json",
+                      ],
                       stderr=subprocess.DEVNULL,
                       text=True,
                   )
@@ -59,34 +92,102 @@ jobs:
                   "ORIGINAL_SNAPSHOT": previous,
                   "CURRENT_SNAPSHOT": v5_probe,
                   "CURRENT_COMMIT": os.environ["SHA"],
-                  "PREVIOUS_COMMIT": subprocess.check_output(
-                      ["git", "rev-parse", "HEAD^"], text=True
-                  ).strip() if previous is not None else None,
-                  "LINEAGE_STATUS": "correction candidate" if previous is not None else "initial observation candidate",
+                  "PREVIOUS_COMMIT": (
+                      subprocess.check_output(
+                          ["git", "rev-parse", "HEAD^"],
+                          text=True,
+                      ).strip()
+                      if previous is not None
+                      else None
+                  ),
+                  "LINEAGE_STATUS": (
+                      "correction candidate"
+                      if previous is not None
+                      else "initial observation candidate"
+                  ),
               }
 
+          is_v4_dispatch = (
+              payload.get("action") == "ioel-v4-unknown-field"
+          )
+
           record = {
-              "EVENT_ID": f"github-actions:{os.environ['RUN_ID']}:{os.environ['RUN_ATTEMPT']}",
-              "TIMESTAMP": payload.get("head_commit", {}).get("timestamp"),
-              "SOURCE": "GitHub Actions push event",
-              "OBSERVABLE_OPERATION": "repository push",
-              "INPUT_REFERENCE": v4_probe.get("INPUT_REFERENCE") if isinstance(v4_probe, dict) else None,
-              "V4_PROBE": v4_probe if isinstance(v4_probe, dict) else None,
+              "EVENT_ID": (
+                  f"github-actions:"
+                  f"{os.environ['RUN_ID']}:"
+                  f"{os.environ['RUN_ATTEMPT']}"
+              ),
+
+              "TIMESTAMP": (
+                  payload.get("head_commit", {}).get("timestamp")
+                  if not is_v4_dispatch
+                  else payload.get("repository", {}).get("updated_at")
+              ),
+
+              "SOURCE": (
+                  "GitHub Actions repository_dispatch event"
+                  if is_v4_dispatch
+                  else "GitHub Actions push event"
+              ),
+
+              "OBSERVABLE_OPERATION": (
+                  "repository_dispatch"
+                  if is_v4_dispatch
+                  else "repository push"
+              ),
+
+              "INPUT_REFERENCE": (
+                  v4_probe.get("INPUT_REFERENCE")
+                  if isinstance(v4_probe, dict)
+                  else None
+              ),
+
+              "V4_PROBE": (
+                  v4_probe
+                  if isinstance(v4_probe, dict)
+                  else None
+              ),
+
+              "V4_DISPATCH_PAYLOAD": v4_dispatch_payload,
+
               "V5_CORRECTION_LINEAGE": v5_lineage,
-              "V6_BLIND_EVENT": v6_event if isinstance(v6_event, dict) else None,
+
+              "V6_BLIND_EVENT": (
+                  v6_event
+                  if isinstance(v6_event, dict)
+                  else None
+              ),
+
               "OBSERVABLE_RESULT": {
                   "repository": os.environ["REPOSITORY"],
                   "ref": os.environ["REF"],
                   "commit_sha": os.environ["SHA"],
               },
+
               "STATE_CHANGE_REFERENCE": os.environ["SHA"],
+
               "DOWNSTREAM_DEPENDENCE": None,
-              "INDEPENDENT_EVIDENCE_REFERENCE": f"github-actions-run:{os.environ['RUN_ID']}",
-              "RECORDER_STATUS": "externally executed by GitHub Actions; observation scope limited to repository push events",
+
+              "INDEPENDENT_EVIDENCE_REFERENCE": (
+                  f"github-actions-run:{os.environ['RUN_ID']}"
+              ),
+
+              "RECORDER_STATUS": (
+                  "externally executed by GitHub Actions; "
+                  "observation scope limited to repository push "
+                  "and repository_dispatch events"
+              ),
           }
-          Path("ioel-record/event.json").write_text(json.dumps(record, indent=2) + "\n")
-          Path("ioel-record/source-event.json").write_text(json.dumps(payload, indent=2) + "\n")
+
+          Path("ioel-record/event.json").write_text(
+              json.dumps(record, indent=2) + "\n"
+          )
+
+          Path("ioel-record/source-event.json").write_text(
+              json.dumps(payload, indent=2) + "\n"
+          )
           PY
+
       - name: Upload immutable observation artifact
         uses: actions/upload-artifact@v4
         with:
