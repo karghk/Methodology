@@ -39,6 +39,9 @@ jobs:
           v5_path = Path("research/ioel_v5_correction_probe.json")
           v5_probe = json.loads(v5_path.read_text()) if v5_path.exists() else None
 
+          v6_path = Path("research/ioel_v6_blind_event.json")
+          v6_event = json.loads(v6_path.read_text()) if v6_path.exists() else None
+
           v5_lineage = None
           if isinstance(v5_probe, dict):
               previous = None
@@ -70,6 +73,7 @@ jobs:
               "INPUT_REFERENCE": v4_probe.get("INPUT_REFERENCE") if isinstance(v4_probe, dict) else None,
               "V4_PROBE": v4_probe if isinstance(v4_probe, dict) else None,
               "V5_CORRECTION_LINEAGE": v5_lineage,
+              "V6_BLIND_EVENT": v6_event if isinstance(v6_event, dict) else None,
               "OBSERVABLE_RESULT": {
                   "repository": os.environ["REPOSITORY"],
                   "ref": os.environ["REF"],
