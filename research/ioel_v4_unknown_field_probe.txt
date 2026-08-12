@@ -1,0 +1,3 @@
+V4 controlled probe.
+This event intentionally provides no value for the IOEL INPUT_REFERENCE field; the observer must preserve that field as unknown/null rather than infer a value.
+Non-canonical instrumentation only.
