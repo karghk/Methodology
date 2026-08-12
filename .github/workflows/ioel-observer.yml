@@ -14,14 +14,11 @@ jobs:
     steps:
       - name: Emit IOEL observation
         env:
-          EVENT_NAME: ${{ github.event_name }}
           REPOSITORY: ${{ github.repository }}
           REF: ${{ github.ref }}
           SHA: ${{ github.sha }}
-          ACTOR: ${{ github.actor }}
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
-          EVENT_PATH: ${{ github.event_path }}
         run: |
           mkdir -p ioel-record
           python - <<'PY'
@@ -30,12 +27,19 @@ jobs:
 
           event_path = os.environ["GITHUB_EVENT_PATH"]
           payload = json.loads(Path(event_path).read_text())
+
+          probe_path = Path("research/ioel_v4_probe_input.json")
+          probe = None
+          if probe_path.exists():
+              probe = json.loads(probe_path.read_text())
+
           record = {
               "EVENT_ID": f"github-actions:{os.environ['RUN_ID']}:{os.environ['RUN_ATTEMPT']}",
               "TIMESTAMP": payload.get("head_commit", {}).get("timestamp"),
               "SOURCE": "GitHub Actions push event",
               "OBSERVABLE_OPERATION": "repository push",
-              "INPUT_REFERENCE": None,
+              "INPUT_REFERENCE": probe.get("INPUT_REFERENCE") if isinstance(probe, dict) else None,
+              "V4_PROBE": probe if isinstance(probe, dict) else None,
               "OBSERVABLE_RESULT": {
                   "repository": os.environ["REPOSITORY"],
                   "ref": os.environ["REF"],
