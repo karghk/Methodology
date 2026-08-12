@@ -1,0 +1,8 @@
+{
+  "INPUT_REFERENCE": null,
+  "UNMODELED_FIELD": {
+    "name": "v4_unknown_field_probe",
+    "value": "intentionally-unmodeled",
+    "purpose": "test explicit preservation of an unmodeled field"
+  }
+}
