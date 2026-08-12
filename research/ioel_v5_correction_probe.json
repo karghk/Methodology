@@ -1,5 +1,5 @@
 {
   "OBSERVATION_KIND": "v5-correction-probe",
-  "VALUE": "original-state",
-  "CORRECTION_REASON": null
+  "VALUE": "corrected-state",
+  "CORRECTION_REASON": "Correction made during the controlled V5 lineage test."
 }
