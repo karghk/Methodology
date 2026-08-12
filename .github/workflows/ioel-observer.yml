@@ -12,8 +12,10 @@ jobs:
     name: Record externally observable repository event
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository history
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Emit IOEL observation
         env:
@@ -25,24 +27,49 @@ jobs:
         run: |
           mkdir -p ioel-record
           python - <<'PY'
-          import json, os
+          import json, os, subprocess
           from pathlib import Path
 
           event_path = os.environ["GITHUB_EVENT_PATH"]
           payload = json.loads(Path(event_path).read_text())
 
-          probe_path = Path("research/ioel_v4_probe_input.json")
-          probe = None
-          if probe_path.exists():
-              probe = json.loads(probe_path.read_text())
+          v4_path = Path("research/ioel_v4_probe_input.json")
+          v4_probe = json.loads(v4_path.read_text()) if v4_path.exists() else None
+
+          v5_path = Path("research/ioel_v5_correction_probe.json")
+          v5_probe = json.loads(v5_path.read_text()) if v5_path.exists() else None
+
+          v5_lineage = None
+          if isinstance(v5_probe, dict):
+              previous = None
+              try:
+                  raw = subprocess.check_output(
+                      ["git", "show", "HEAD^:research/ioel_v5_correction_probe.json"],
+                      stderr=subprocess.DEVNULL,
+                      text=True,
+                  )
+                  previous = json.loads(raw)
+              except Exception:
+                  previous = None
+
+              v5_lineage = {
+                  "ORIGINAL_SNAPSHOT": previous,
+                  "CURRENT_SNAPSHOT": v5_probe,
+                  "CURRENT_COMMIT": os.environ["SHA"],
+                  "PREVIOUS_COMMIT": subprocess.check_output(
+                      ["git", "rev-parse", "HEAD^"], text=True
+                  ).strip() if previous is not None else None,
+                  "LINEAGE_STATUS": "correction candidate" if previous is not None else "initial observation candidate",
+              }
 
           record = {
               "EVENT_ID": f"github-actions:{os.environ['RUN_ID']}:{os.environ['RUN_ATTEMPT']}",
               "TIMESTAMP": payload.get("head_commit", {}).get("timestamp"),
               "SOURCE": "GitHub Actions push event",
               "OBSERVABLE_OPERATION": "repository push",
-              "INPUT_REFERENCE": probe.get("INPUT_REFERENCE") if isinstance(probe, dict) else None,
-              "V4_PROBE": probe if isinstance(probe, dict) else None,
+              "INPUT_REFERENCE": v4_probe.get("INPUT_REFERENCE") if isinstance(v4_probe, dict) else None,
+              "V4_PROBE": v4_probe if isinstance(v4_probe, dict) else None,
+              "V5_CORRECTION_LINEAGE": v5_lineage,
               "OBSERVABLE_RESULT": {
                   "repository": os.environ["REPOSITORY"],
                   "ref": os.environ["REF"],
