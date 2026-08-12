@@ -1,0 +1,12 @@
+{
+  "OBSERVATION_KIND": "v6-blind-event",
+  "EVENT_PAYLOAD": {
+    "operation": "controlled-test-event",
+    "state": "externally-generated",
+    "sequence": 1
+  },
+  "PROVENANCE": "operator-generated fixture",
+  "CANDIDATE": null,
+  "EXPECTED_RESULT": null,
+  "AI_ASSERTION": null
+}
