@@ -3,8 +3,11 @@ name: IOEL External Observer
 on:
   push:
     branches: [main]
+
   repository_dispatch:
-    types: [ioel-v4-unknown-field]
+    types:
+      - ioel-v1-known-positive
+      - ioel-v4-unknown-field
 
 permissions:
   contents: read
@@ -34,10 +37,13 @@ jobs:
           import json
           import os
           import subprocess
+          from datetime import datetime, timezone
           from pathlib import Path
 
           event_path = os.environ["GITHUB_EVENT_PATH"]
           payload = json.loads(Path(event_path).read_text())
+
+          observer_recorded_at = datetime.now(timezone.utc).isoformat()
 
           v4_path = Path("research/ioel_v4_probe_input.json")
           v4_probe = (
@@ -60,13 +66,19 @@ jobs:
               else None
           )
 
-          # V4 correction path:
-          # repository_dispatch supplies an externally provided client_payload.
-          # The observer records that payload rather than constructing the
-          # unmodeled field itself.
+          event_type = payload.get("action")
+
+          is_repository_dispatch = event_type is not None
+          is_v1_dispatch = event_type == "ioel-v1-known-positive"
+          is_v4_dispatch = event_type == "ioel-v4-unknown-field"
+
+          v1_dispatch_payload = None
           v4_dispatch_payload = None
 
-          if payload.get("action") == "ioel-v4-unknown-field":
+          if is_v1_dispatch:
+              v1_dispatch_payload = payload.get("client_payload")
+
+          if is_v4_dispatch:
               v4_dispatch_payload = payload.get("client_payload")
 
           v5_lineage = None
@@ -107,10 +119,6 @@ jobs:
                   ),
               }
 
-          is_v4_dispatch = (
-              payload.get("action") == "ioel-v4-unknown-field"
-          )
-
           record = {
               "EVENT_ID": (
                   f"github-actions:"
@@ -118,21 +126,17 @@ jobs:
                   f"{os.environ['RUN_ATTEMPT']}"
               ),
 
-              "TIMESTAMP": (
-                  payload.get("head_commit", {}).get("timestamp")
-                  if not is_v4_dispatch
-                  else payload.get("repository", {}).get("updated_at")
-              ),
+              "TIMESTAMP": observer_recorded_at,
 
               "SOURCE": (
                   "GitHub Actions repository_dispatch event"
-                  if is_v4_dispatch
+                  if is_repository_dispatch
                   else "GitHub Actions push event"
               ),
 
               "OBSERVABLE_OPERATION": (
                   "repository_dispatch"
-                  if is_v4_dispatch
+                  if is_repository_dispatch
                   else "repository push"
               ),
 
@@ -141,6 +145,8 @@ jobs:
                   if isinstance(v4_probe, dict)
                   else None
               ),
+
+              "V1_DISPATCH_PAYLOAD": v1_dispatch_payload,
 
               "V4_PROBE": (
                   v4_probe
