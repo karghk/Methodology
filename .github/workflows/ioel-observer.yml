@@ -7,6 +7,7 @@ on:
   repository_dispatch:
     types:
       - ioel-v1-known-positive
+      - ioel-v3-blind-event
       - ioel-v4-unknown-field
 
 permissions:
@@ -70,13 +71,18 @@ jobs:
 
           is_repository_dispatch = event_type is not None
           is_v1_dispatch = event_type == "ioel-v1-known-positive"
+          is_v3_dispatch = event_type == "ioel-v3-blind-event"
           is_v4_dispatch = event_type == "ioel-v4-unknown-field"
 
           v1_dispatch_payload = None
+          v3_dispatch_payload = None
           v4_dispatch_payload = None
 
           if is_v1_dispatch:
               v1_dispatch_payload = payload.get("client_payload")
+
+          if is_v3_dispatch:
+              v3_dispatch_payload = payload.get("client_payload")
 
           if is_v4_dispatch:
               v4_dispatch_payload = payload.get("client_payload")
@@ -147,6 +153,8 @@ jobs:
               ),
 
               "V1_DISPATCH_PAYLOAD": v1_dispatch_payload,
+
+              "V3_DISPATCH_PAYLOAD": v3_dispatch_payload,
 
               "V4_PROBE": (
                   v4_probe
