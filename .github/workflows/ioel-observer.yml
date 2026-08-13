@@ -9,6 +9,7 @@ on:
       - ioel-v1-known-positive
       - ioel-v3-blind-event
       - ioel-v4-unknown-field
+      - ioel-v6-blind-event
 
 permissions:
   contents: read
