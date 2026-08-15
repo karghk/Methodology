@@ -1,0 +1,3 @@
+C0 LIVE EVENT
+timestamp-independent fixture
+operation=created
