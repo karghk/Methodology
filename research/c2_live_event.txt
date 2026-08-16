@@ -1,0 +1,3 @@
+C2 LIVE EVENT
+operation=created
+condition=interrupted
