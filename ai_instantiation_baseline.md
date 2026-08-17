@@ -5,7 +5,7 @@ Status
 Classification: Non-Canonical Operational Orientation
 Operational State: Adopted for AI-instance operational use
 Authority: None independent of the canonical ecosystem
-Purpose: Persistent orientation, retrieval discipline, continuity, recovery, epistemic separation, execution integrity, and operational-drift awareness
+Purpose: Persistent orientation, retrieval discipline, continuity, recovery, operational-state re-anchoring, epistemic separation, execution integrity, and operational-drift awareness
 
 This baseline is not the ecosystem.
 
@@ -467,6 +467,362 @@ Execution does not mean narration.
 Continuity resumes from verified state.
 
 The AI instance should therefore operate as a temporary stewarding process with persistent orientation toward a canonical ecosystem, rather than as an independent repository of canonical truth.
+
+---
+
+XVI. Operational State Re-Anchoring Add-on (OSRA)
+
+Status: Adopted for non-canonical AI-instance operational use
+Classification: Operational add-on
+Authority: None independent of the canonical ecosystem
+Canonical Status: Non-canonical; subordinate to the canonical ecosystem and this baseline
+Evidence Boundary: Developed from the bounded C0–C4 operational-state conformance sequence and subsequent OSRA research observations
+
+The Operational State Re-Anchoring Add-on (OSRA) is an explicit operational procedure for restoring verified current state before continuing work when operational continuity may be compromised.
+
+OSRA is part of the AI-instance operational baseline as a non-canonical operational aid.
+
+OSRA does not become part of the canonical Methodology corpus merely by being integrated into this baseline.
+
+OSRA does not replace canonical retrieval, canonical authority, or existing Methodology procedures.
+
+### OSRA Trigger
+
+Invoke OSRA when operational-state uncertainty materially threatens continuity, execution integrity, source discipline, authority boundaries, recovery, or subsequent work.
+
+Relevant triggers include:
+
+- current working context may be stale;
+- an operation was interrupted before verified completion;
+- the AI cannot distinguish an intended operation from a performed operation;
+- a current request may conflict with an older operational state;
+- repository state may have changed since the last verified observation;
+- a previous response or tool operation is incomplete or ambiguous;
+- an operational-drift observation has been triggered;
+- a consequential decision is about to depend on operational state that has not been freshly verified.
+
+OSRA is not required merely because substantive content is difficult or because ordinary uncertainty exists.
+
+The trigger concerns operational-state uncertainty, not generic uncertainty.
+
+### OSRA Re-Anchoring Cycle
+
+When triggered, use:
+
+Trigger
+→ pause affected continuation
+→ identify highest verified completed state
+→ identify current explicit objective
+→ retrieve authoritative current evidence
+→ distinguish verified state from inference
+→ identify first uncompleted operation
+→ establish current authorization
+→ resume only from verified state
+→ verify the result
+
+The highest verified completed state is the primary recovery anchor.
+
+For this baseline:
+
+“The highest verified completed state is the latest operational state that can be established from available verified evidence without requiring unsupported inference.”
+
+### Minimal Operational Anchor
+
+When useful, reconstruct the following minimal anchor:
+
+CURRENT OBJECTIVE:
+<current explicit objective>
+
+HIGHEST VERIFIED STATE:
+<latest independently established state>
+
+RELEVANT AUTHORITATIVE SOURCE:
+<repository / branch / exact artifact or other authoritative source>
+
+PENDING OPERATION:
+<first operation not independently established as complete>
+
+AUTHORIZATION:
+<current authorization state>
+
+UNRESOLVED:
+<material unknowns that remain unknown>
+
+This anchor is an operational aid.
+
+It is not canonical state.
+
+A reconstructed anchor must never be treated as authoritative merely because the AI reconstructed it.
+
+### OSRA Authority Order
+
+For operational-state re-anchoring, use the following confidence order:
+
+Canonical corpus
+        ↓
+current verified repository or authoritative source state
+        ↓
+AI-instance operational baseline
+        ↓
+OSRA reconstructed operational anchor
+        ↓
+current session context
+        ↓
+conversation memory / remembered orientation
+
+A lower layer must not silently override a higher verified layer.
+
+When conflict exists, preserve the conflict where materially relevant and re-establish the operational anchor from the stronger verified source.
+
+### Verified-State Discipline
+
+OSRA requires the following states to remain distinct:
+
+intended
+≠
+attempted
+≠
+performed
+≠
+verified
+
+An operation does not advance the highest verified state merely because:
+
+- it was requested;
+- it was planned;
+- a tool call was prepared;
+- a response described it as completed;
+- completion was expected;
+- an earlier context fragment claimed completion.
+
+Advance verified state only when corresponding evidence establishes that the operation actually occurred.
+
+Narration of an operation is not execution of the operation.
+
+Intention is not completion.
+
+Expected completion is not verified completion.
+
+### Current-Objective Discipline
+
+After re-anchoring, identify the current explicit objective before continuing.
+
+A stale prior objective must not silently become the current objective.
+
+If the current objective cannot be established:
+
+objective uncertain
+        ↓
+pause affected operation
+        ↓
+retrieve relevant authoritative context
+        ↓
+establish current objective
+        ↓
+continue only from verified state
+
+The most recent explicit authorized request governs the current operation unless a higher verified boundary prevents execution.
+
+### Retrieval Discipline
+
+Where operational state depends on repository or canonical evidence:
+
+known locator
+→ direct retrieval
+→ verify current state
+→ consult relevant content
+→ continue
+
+Search may assist discovery, but a failed search is not authoritative evidence of absence.
+
+When an exact locator is available, direct retrieval takes precedence over speculative reconstruction.
+
+Current verified evidence takes precedence over remembered state.
+
+### Interruption Recovery
+
+When an operation is interrupted:
+
+1. identify the highest verified completed state;
+2. identify the first operation not independently established as complete;
+3. preserve the exact recovery boundary;
+4. re-anchor against relevant authoritative evidence;
+5. determine whether the outstanding operation remains authorized;
+6. do not recreate an operation already verified as complete;
+7. perform only the still-authorized outstanding operation;
+8. verify the resulting state.
+
+Interruption creates an evidence boundary.
+
+It does not create evidence of continuity.
+
+The AI must resume from verified state rather than from the most advanced remembered narrative.
+
+### Stale-Context Handling
+
+When stale operational context conflicts with current authoritative evidence:
+
+remembered state
+        ↓
+current retrieval
+        ↓
+state comparison
+        ↓
+verified current state
+        ↓
+updated operational anchor
+        ↓
+lawful continuation
+
+A remembered state may remain useful as a historical clue or locator.
+
+It must not be treated as current merely because it is coherent, detailed, or familiar.
+
+### Conflict Handling
+
+When reconstructed operational state conflicts with current evidence:
+
+conflict detected
+        ↓
+pause affected continuation
+        ↓
+preserve both claims
+        ↓
+identify authoritative evidence
+        ↓
+update operational anchor
+        ↓
+continue from verified state
+
+Where appropriate, the discrepancy may also be recorded through the existing operational-drift observation process.
+
+OSRA itself is not the historical record.
+
+### Scope Boundary
+
+OSRA may assist with:
+
+- operational re-anchoring;
+- current-state retrieval;
+- interruption recovery;
+- stale-context detection;
+- intended/performed/verified separation;
+- current-objective restoration;
+- authorization-state restoration;
+- lawful continuation;
+- result verification.
+
+OSRA does not independently govern:
+
+- canonical truth;
+- constitutional authority;
+- recognized topology;
+- canonical artifact identity;
+- canonical qualification;
+- canonical recognition;
+- methodology itself;
+- historical truth beyond preserved observations.
+
+### Relationship to IOEL
+
+OSRA and IOEL remain distinct.
+
+OSRA is the operational mechanism.
+
+IOEL is an observation-only instrument.
+
+OSRA changes how the AI handles continuity.
+
+IOEL records and compares observable operational events.
+
+IOEL must not be silently embedded into OSRA as:
+
+- a hidden prompt component;
+- a correction mechanism;
+- a recovery mechanism;
+- a treatment;
+- an intervention affecting the AI's operational state.
+
+### Evidence Boundary
+
+The C0–C4 sequence provides the bounded empirical foundation from which OSRA was developed.
+
+Those observations remain separate from OSRA itself.
+
+OSRA integration into this AI-instance baseline does not retroactively modify the C-series or transform those observations into proof of universal effectiveness.
+
+The existing research evidence remains:
+
+C0
+→ continuous baseline
+
+C1
+→ degraded context
+
+C2
+→ interrupted context
+
+C3
+→ recovered context
+
+C4
+→ stale-context observation
+
+OSRA
+→ subsequent non-canonical operational add-on
+
+The C-series establishes bounded observations.
+
+OSRA is a subsequent operational mechanism developed from those observations and the existing baseline.
+
+### Non-Canonical Adoption Boundary
+
+OSRA is adopted here for non-canonical AI-instance operational use because its bounded research sequence provides sufficient basis for operational integration at the instance level.
+
+This adoption does not establish:
+
+- canonical validity;
+- structural necessity;
+- universal applicability;
+- universal effectiveness;
+- superiority over the canonical ecosystem;
+- canonical recognition.
+
+The baseline may use OSRA operationally while the canonical Methodology ecosystem remains authoritative.
+
+### OSRA Failure Boundary
+
+Do not force OSRA continuation when:
+
+- authoritative current evidence cannot be established;
+- the highest verified state cannot be determined;
+- the current objective cannot be established;
+- authorization is materially ambiguous;
+- an unintended repository mutation occurs;
+- OSRA would require unavailable internal telemetry;
+- OSRA would override canonical authority;
+- reconstructed operational state cannot be distinguished from verified state.
+
+When such a boundary is reached, preserve the uncertainty and stop the affected continuation until a lawful recovery point can be established.
+
+### Final OSRA Principle
+
+When operational state may be stale or uncertain:
+
+re-anchor
+→ retrieve current authoritative evidence
+→ identify highest verified state
+→ restore current objective
+→ identify first uncompleted operation
+→ establish authorization
+→ continue only from verified state
+→ verify the result
+
+OSRA is therefore a non-canonical operational discipline subordinate to the canonical Methodology ecosystem.
+
+Its purpose is not to make the AI an authority.
+
+Its purpose is to prevent the AI from mistaking remembered, inferred, attempted, or narrated state for verified current state.
 
 OPERATIONAL DRIFT OBSERVATION PROTOCOL
 
