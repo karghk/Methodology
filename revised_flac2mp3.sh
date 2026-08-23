@@ -20,15 +20,15 @@ duration(){ ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1
 duration_us(){ awk -v s="$(duration "$1")" 'BEGIN{printf "%.0f",(s+0)*1000000}'; }
 cover(){ [[ "$(ffprobe -v error -select_streams v -show_entries stream=disposition.attached_pic -of default=nw=1:nk=1 "$1" 2>/dev/null)" == 1 ]]; }
 
-# Conversion bar: reserve the last four columns for the fixed percentage.
 progress_bar(){ local pct=$1 width=$2 body filled empty; ((pct<0))&&pct=0; ((pct>100))&&pct=100; body=$((width-4)); ((body<1))&&body=1; filled=$((body*pct/100)); empty=$((body-filled)); printf '%*s' "$filled" ''|tr ' ' '#'; printf '%*s' "$empty" ''|tr ' ' '-'; printf '%3d%%' "$pct"; }
 summary_bar(){ local pct=$1 width=$2 filled empty; ((pct<0))&&pct=0; ((pct>100))&&pct=100; filled=$((width*pct/100)); empty=$((width-filled)); printf '%*s' "$filled" ''|tr ' ' '#'; printf '%*s' "$empty" ''|tr ' ' '.'; }
 fit(){ local s=$1 w=${2:-$WIDTH}; if ((${#s}>w)); then printf '%s...' "${s:0:w-3}"; else printf '%s' "$s"; fi; }
 
-# The greeting establishes the permanent Artist anchor at row 4.
-# All later frames begin at the same coordinate and preserve that row.
-FRAME_ROWS=13
-frame_begin(){ WIDTH="$(terminal_width)"; printf '\033[H'; for ((r=0;r<FRAME_ROWS;r++)); do printf '\033[2K\n'; done; printf '\033[H'; }
+# Greeting puts Artist: on row 4. Every later frame clears the old frame,
+# returns to the same origin, and starts rendering on row 4 so the anchor
+# never moves vertically.
+FRAME_ROWS=16
+frame_begin(){ WIDTH="$(terminal_width)"; printf '\033[H'; for ((r=0;r<FRAME_ROWS;r++)); do printf '\033[2K\n'; done; printf '\033[H\033[3B'; }
 frame_line(){ printf '\033[2K%s\n' "$1"; }
 frame_bar(){ local p=$1; printf '\033[2K'; progress_bar "$p" "$WIDTH"; printf '\n'; }
 
@@ -54,8 +54,6 @@ scan_frame(){
  frame_line "       $albums albums"
 }
 
-# Exact frozenfourUI conversion layout. Artist remains the first visual anchor;
-# the context sentence is not replaced by a different header structure.
 convert_frame(){
  local artist=$1 an=$2 at=$3 tn=$4 tt=$5 file=$6 pct=$7 overall=$8 bitrate=$9 size=${10} dur=${11} elapsed=${12} eta=${13}
  frame_begin
@@ -75,42 +73,57 @@ convert_frame(){
 
 summary_frame(){
  local artist=$1 elapsed=$2 done=$3 total=$4 failed=$5 skipped=$6 embedded=$7 copied=$8 extras=$9 src=${10} dst=${11} reduced=${12} pct=${13}
- clear_screen
- WIDTH="$(terminal_width)"
- printf 'Artist: %s\n\n' "$artist"
- printf '%s elapsed\n' "$elapsed"
- printf '> 100%% [%d/%d]\n' "$done" "$total"
- printf '> [%d] failed ; [%d] skipped\n' "$failed" "$skipped"
- printf '> [%d/%d] images embedded\n' "$embedded" "$total"
- printf '> [%d/%d] extra files copied\n\n' "$copied" "$extras"
- printf '[%s] Source FLACs + extras\n' "$src"
- summary_bar 100 "$WIDTH"; printf '\n\n'
- printf '[%s] Converted MP3s + extras\n' "$dst"
- summary_bar "$pct" "$WIDTH"; printf '\n\n'
- printf '> %s reduced\n\n' "$reduced"
- printf '%s\n\n' '----------------------------------------'
- printf '[C] Convert another artist\n'
- printf '[Q] Quit\n'
- [[ -s "$LAST_ERROR_LOG" ]] && printf '[V] View error log\n'
+ frame_begin
+ frame_line "Artist: $artist"
+ frame_line ''
+ frame_line "$elapsed elapsed"
+ frame_line "> 100% [$done/$total]"
+ frame_line "> [$failed] failed ; [$skipped] skipped"
+ frame_line "> [$embedded/$total] images embedded"
+ frame_line "> [$copied/$extras] extra files copied"
+ frame_line ''
+ frame_line "[$src] Source FLACs + extras"
+ printf '\033[2K'; summary_bar 100 "$WIDTH"; printf '\n'
+ frame_line ''
+ frame_line "[$dst] Converted MP3s + extras"
+ printf '\033[2K'; summary_bar "$pct" "$WIDTH"; printf '\n'
+ frame_line ''
+ frame_line "> $reduced reduced"
+ frame_line ''
+ frame_line '----------------------------------------'
+ frame_line ''
+ frame_line '[C] Convert another artist'
+ frame_line '[Q] Quit'
+ [[ -s "$LAST_ERROR_LOG" ]] && frame_line '[V] View error log'
 }
 
 convert_track(){
  local src=$1 dst=$2 dur_us=$3 artist=$4 an=$5 at=$6 tn=$7 tt=$8 before=$9 start=${10} log=${11}
- local pfile efile pid status out_us pct overall bitrate size elapsed eta done_units dur name
+ local pfile efile pid status out_us pct overall bitrate size elapsed eta done_units dur name current_bytes total_bytes
  pfile=$(mktemp); efile=$(mktemp); dur=$(hdur "$(duration "$src")"); name=${src##*/}; mkdir -p "${dst%/*}"
 
- # Keep ffmpeg detached from the terminal. Its machine-readable progress is
- # written to a file while the main shell polls that file and redraws the UI.
- # The output file's growing size is also sampled for the live Size metric.
- ffmpeg -hide_banner -loglevel error -nostats -nostdin -y -i "$src" -map 0:a:0 -map 0:v? -map_metadata 0 -c:a libmp3lame -q:a 2 -c:v mjpeg -id3v2_version 3 -write_id3v1 1 -progress "$pfile" "$dst" 2>"$efile" &
+ # Use a fixed 256 kb/s target so the final converted file size is
+ # deterministic from duration. The live bar is then literally:
+ # current output bytes / expected total converted bytes.
+ total_bytes=$(awk -v us="$dur_us" 'BEGIN{printf "%.0f",(us/1000000)*256000/8+2048}')
+ ((total_bytes<1))&&total_bytes=1
+
+ ffmpeg -hide_banner -loglevel error -nostats -nostdin -y -i "$src" -map 0:a:0 -map 0:v? -map_metadata 0 -c:a libmp3lame -b:a 256k -c:v mjpeg -id3v2_version 3 -write_id3v1 1 -progress "$pfile" "$dst" 2>"$efile" &
  pid=$!
  while :; do
+   current_bytes=$(size_of "$dst")
+   pct=$((current_bytes*100/total_bytes)); ((pct>99))&&pct=99
    out_us=$(awk -F= '/^out_time_us=/{v=$2} END{print v+0}' "$pfile" 2>/dev/null); [[ "$out_us" =~ ^[0-9]+$ ]]||out_us=0
-   if ((dur_us>0)); then pct=$((out_us*100/dur_us)); else pct=0; fi
-   ((pct>100))&&pct=100
+   # If size reporting lags momentarily, duration progress may advance the
+   # display, but the primary conversion metric remains output-size based.
+   if ((out_us>0 && dur_us>0)); then
+     time_pct=$((out_us*100/dur_us)); ((time_pct>100))&&time_pct=100
+     if ((time_pct>pct && current_bytes>0)); then pct=$time_pct; fi
+   fi
+   ((pct>99))&&pct=99
    overall=$(( (before*100+pct)/tt )); ((overall>100))&&overall=100
-   bitrate=$(awk -F= '/^bitrate=/{v=$2} END{print v}' "$pfile" 2>/dev/null); [[ -n "$bitrate" ]]||bitrate='--'
-   size=$(hsize "$(size_of "$dst")")
+   bitrate=$(awk -F= '/^bitrate=/{v=$2} END{print v}' "$pfile" 2>/dev/null); [[ -n "$bitrate" ]]||bitrate='256 kb/s'
+   size="$(hsize "$current_bytes") / $(hsize "$total_bytes")"
    elapsed=$(( $(date +%s)-start )); done_units=$((before*100+pct)); eta=0; ((done_units>0))&&eta=$((elapsed*(tt*100-done_units)/done_units))
    convert_frame "$artist" "$an" "$at" "$tn" "$tt" "$name" "$pct" "$overall" "$bitrate" "$size" "$dur" "$(hdur "$elapsed")" "$(hdur "$eta")"
    if ! kill -0 "$pid" 2>/dev/null; then wait "$pid"; status=$?; break; fi
@@ -118,8 +131,8 @@ convert_track(){
  done
  if ((status==0)); then
    pct=100; overall=$(( (before*100+100)/tt )); ((overall>100))&&overall=100
-   bitrate=$(awk -F= '/^bitrate=/{v=$2} END{print v}' "$pfile" 2>/dev/null); [[ -n "$bitrate" ]]||bitrate='--'
-   size=$(hsize "$(size_of "$dst")"); elapsed=$(( $(date +%s)-start )); eta=0
+   bitrate=$(awk -F= '/^bitrate=/{v=$2} END{print v}' "$pfile" 2>/dev/null); [[ -n "$bitrate" ]]||bitrate='256 kb/s'
+   current_bytes=$(size_of "$dst"); size="$(hsize "$current_bytes") / $(hsize "$total_bytes")"; elapsed=$(( $(date +%s)-start )); eta=0
    convert_frame "$artist" "$an" "$at" "$tn" "$tt" "$name" 100 "$overall" "$bitrate" "$size" "$dur" "$(hdur "$elapsed")" "$(hdur "$eta")"
  else
    printf 'FILE: %s\n' "$src" >>"$log"; cat "$efile" >>"$log"; printf '\n' >>"$log"; rm -f "$dst"
