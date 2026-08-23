@@ -19,17 +19,18 @@ terminal_width() {
 }
 
 WIDTH="$(terminal_width)"
-ARTIST_ROWS=1
-FILENAME_ROW=2
-BAR_ROW=3
-ENCODING_ROW=4
-SIZE_ROW=5
-DUR_ROW=6
-ELAPSED_ROW=7
-ETA_ROW=8
-OVERALL_BAR_ROW=10
-OVERALL_TEXT_ROW=11
+# Artist context has one absolute anchor: row 4 in every UI state.
+ARTIST_ROW=4
 ARTIST_CONTEXT_COUNT=1
+FILENAME_ROW=5
+BAR_ROW=6
+ENCODING_ROW=7
+SIZE_ROW=8
+DUR_ROW=9
+ELAPSED_ROW=10
+ETA_ROW=11
+OVERALL_BAR_ROW=13
+OVERALL_TEXT_ROW=14
 
 clear_screen(){ printf '\033[2J\033[H'; }
 hide(){ printf '\033[?25l'; }
@@ -38,7 +39,6 @@ trap 'show; printf "\n"' EXIT INT TERM
 move(){ printf '\033[%d;%dH' "$1" "$2"; }
 clr(){ move "$1" 1; printf '\033[2K'; }
 put(){ local r=${1:-1} t=${2-}; clr "$r"; move "$r" 1; printf '%s' "$t"; }
-val(){ local r=$1 c=$2 width=$3 t=${4-}; move "$r" "$c"; printf "%-${width}s" "${t:0:width}"; }
 
 # Display-only fitting. Filesystem paths and filenames are never altered.
 fit(){
@@ -47,7 +47,6 @@ fit(){
     printf '%s' "${s:0:w}"
 }
 
-# Wrap long text into complete terminal-width lines. Nothing is discarded.
 wrap_lines(){
     local text=${1-} width=${2:-$WIDTH} line
     while ((${#text}>width)); do
@@ -58,28 +57,36 @@ wrap_lines(){
     printf '%s\n' "$text"
 }
 
-# Render the artist context using as many rows as required.
-# IMPORTANT: output from put() is terminal control output, so the row count is
-# returned through a global rather than command substitution.
+# Render at the fixed ARTIST_ROW anchor. Long context occupies following rows.
+# The row count is returned through a global; terminal escape output is never
+# captured through command substitution.
 artist_context_rows(){
-    local artist=${1-} album_no=${2-} album_total=${3-} track_no=${4-} track_total=${5-}
+    local artist=${1-} album_no=${2-} album_total=${3-} track_no=${4-} track_total=${5-0}
     local context="Artist: $artist > Album ${album_no}/${album_total} > Track ${track_no}/${track_total} >"
     local -a lines=() line
     local i=0
     while IFS= read -r line; do lines+=("$line"); done < <(wrap_lines "$context" "$WIDTH")
-    ((${#lines[@]}<1))&&lines=('Artist:')
+    ((${#lines[@]}<1)) && lines=('Artist:')
     for line in "${lines[@]}"; do
-        put "$((ARTIST_ROWS+i))" "$line"
+        put "$((ARTIST_ROW+i))" "$line"
         i=$((i+1))
     done
-    while ((i<3)); do clr "$((ARTIST_ROWS+i))"; i=$((i+1)); done
+    # Clear the reserved context area so stale lines never remain.
+    while ((i<3)); do clr "$((ARTIST_ROW+i))"; i=$((i+1)); done
     ARTIST_CONTEXT_COUNT=${#lines[@]}
 }
 
 ui_rows_for_artist(){
     local n=${1:-1}
-    FILENAME_ROW=$((n+1)); BAR_ROW=$((n+2)); ENCODING_ROW=$((n+3)); SIZE_ROW=$((n+4))
-    DUR_ROW=$((n+5)); ELAPSED_ROW=$((n+6)); ETA_ROW=$((n+7)); OVERALL_BAR_ROW=$((n+9)); OVERALL_TEXT_ROW=$((n+10))
+    FILENAME_ROW=$((ARTIST_ROW+n))
+    BAR_ROW=$((FILENAME_ROW+1))
+    ENCODING_ROW=$((BAR_ROW+1))
+    SIZE_ROW=$((ENCODING_ROW+1))
+    DUR_ROW=$((SIZE_ROW+1))
+    ELAPSED_ROW=$((DUR_ROW+1))
+    ETA_ROW=$((ELAPSED_ROW+1))
+    OVERALL_BAR_ROW=$((ETA_ROW+2))
+    OVERALL_TEXT_ROW=$((OVERALL_BAR_ROW+1))
 }
 
 hsize(){ awk -v b="${1:-0}" 'BEGIN{split("B KiB MiB GiB TiB",u);i=1;while(b>=1024&&i<5){b/=1024;i++};printf(i==1?"%.0f %s":"%.1f %s",b,u[i])}'; }
@@ -103,17 +110,18 @@ greeting(){
     put 1 "Source      : $(fit "$SOURCE_ROOT" $((WIDTH-15)))"
     put 2 "Destination : $(fit "$DEST_ROOT" $((WIDTH-15)))"
     put 3 ''
-    put 4 'Artist:'; move 4 8; show
+    # Absolute artist anchor shared by greeting, scanning, conversion, summary.
+    put "$ARTIST_ROW" 'Artist:'; move "$ARTIST_ROW" 8; show
 }
 
 scan_frame(){
     local artist=${1-} total=${2-0} albums=${3-0} current=${4-}
     clear_screen
-    put 1 "Artist: $(fit "$artist" $((WIDTH-8)))"
-    put 2 'Scanning...'
-    put 3 "$(fit "$current" "$WIDTH")"
-    put 5 "Found: $total tracks"
-    put 6 "       $albums albums"
+    put "$ARTIST_ROW" "Artist: $(fit "$artist" $((WIDTH-8)))"
+    put "$((ARTIST_ROW+1))" 'Scanning...'
+    put "$((ARTIST_ROW+2))" "$(fit "$current" "$WIDTH")"
+    put "$((ARTIST_ROW+4))" "Found: $total tracks"
+    put "$((ARTIST_ROW+5))" "       $albums albums"
 }
 
 conversion_static(){
@@ -135,12 +143,14 @@ conversion_static(){
 
 conversion_dynamic(){
     local pct=${1:-0} overall=${2:-0} bitrate_raw=${3:-0} size=${4:---} elapsed=${5:---} eta=${6:---} dur=${7:---}
+    # Redraw complete rows rather than writing at fixed columns. This prevents
+    # Duration/Elapsed/ETA fields from colliding when terminal widths vary.
     clr "$BAR_ROW"; move "$BAR_ROW" 1; bar "$pct" "$WIDTH"
     put "$ENCODING_ROW" "${pct}% Complete (@256kbit/s)"
-    val "$SIZE_ROW" 18 32 "$size"
-    val "$DUR_ROW" 18 16 "$dur"
-    val "$ELAPSED_ROW" 18 12 "$elapsed"
-    val "$ETA_ROW" 18 12 "$eta"
+    put "$SIZE_ROW" "Size:            $size"
+    put "$DUR_ROW" "Track Duration:  $dur"
+    put "$ELAPSED_ROW" "Elapsed:         $elapsed"
+    put "$ETA_ROW" "ETA:             $eta"
     clr "$OVERALL_BAR_ROW"; move "$OVERALL_BAR_ROW" 1; summary_bar "$overall" "$WIDTH"
     put "$OVERALL_TEXT_ROW" "Overall ${overall}% Complete"
 }
@@ -148,13 +158,14 @@ conversion_dynamic(){
 summary_frame(){
     local artist=${1-} elapsed=${2-} done=${3-0} total=${4-0} failed=${5-0} skipped=${6-0} embedded=${7-0} copied=${8-0} extras=${9-0} src=${10-} dst=${11-} reduced=${12-} pct=${13-0}
     clear_screen
-    put 1 "Artist: $(fit "$artist" $((WIDTH-8)))"
-    put 3 "$elapsed elapsed"; put 4 "> 100% [$done/$total]"; put 5 "> [$failed] failed ; [$skipped] skipped"
-    put 6 "> [$embedded/$total] images embedded"; put 7 "> [$copied/$extras] extra files copied"; put 8 ''
-    put 9 "[$src] Source FLACs + extras"; clr 10; move 10 1; summary_bar 100 "$WIDTH"
-    put 11 "[$dst] Converted MP3s + extras"; clr 12; move 12 1; summary_bar "$pct" "$WIDTH"
-    put 13 "> $reduced reduced"; put 15 '----------------------------------------'; put 17 '[C] Convert another artist'; put 18 '[Q] Quit'
-    [[ -s "$LAST_ERROR_LOG" ]]&&put 19 '[V] View error log'||clr 19
+    # Same absolute artist anchor as every other UI state.
+    put "$ARTIST_ROW" "Artist: $(fit "$artist" $((WIDTH-8)))"
+    put 6 "$elapsed elapsed"; put 7 "> 100% [$done/$total]"; put 8 "> [$failed] failed ; [$skipped] skipped"
+    put 9 "> [$embedded/$total] images embedded"; put 10 "> [$copied/$extras] extra files copied"; put 11 ''
+    put 12 "[$src] Source FLACs + extras"; clr 13; move 13 1; summary_bar 100 "$WIDTH"
+    put 14 "[$dst] Converted MP3s + extras"; clr 15; move 15 1; summary_bar "$pct" "$WIDTH"
+    put 16 "> $reduced reduced"; put 18 '----------------------------------------'; put 20 '[C] Convert another artist'; put 21 '[Q] Quit'
+    [[ -s "$LAST_ERROR_LOG" ]]&&put 22 '[V] View error log'||clr 22
 }
 
 trim_input(){
