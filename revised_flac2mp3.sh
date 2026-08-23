@@ -19,8 +19,16 @@ terminal_width() {
 }
 
 WIDTH="$(terminal_width)"
-ARTIST_ROW=4; FILENAME_ROW=5; BAR_ROW=6; ENCODING_ROW=7; BITRATE_ROW=8
-SIZE_ROW=9; DUR_ROW=10; ELAPSED_ROW=11; ETA_ROW=12; OVERALL_BAR_ROW=14; OVERALL_TEXT_ROW=15
+ARTIST_ROWS=1
+FILENAME_ROW=2
+BAR_ROW=3
+ENCODING_ROW=4
+SIZE_ROW=5
+DUR_ROW=6
+ELAPSED_ROW=7
+ETA_ROW=8
+OVERALL_BAR_ROW=10
+OVERALL_TEXT_ROW=11
 
 clear_screen(){ printf '\033[2J\033[H'; }
 hide(){ printf '\033[?25l'; }
@@ -31,13 +39,41 @@ clr(){ move "$1" 1; printf '\033[2K'; }
 put(){ local r=${1:-1} t=${2-}; clr "$r"; move "$r" 1; printf '%s' "$t"; }
 val(){ local r=$1 c=$2 width=$3 t=${4-}; move "$r" "$c"; printf "%-${width}s" "${t:0:width}"; }
 
-# Display-only truncation. SOURCE_ROOT/DEST_ROOT and filesystem paths are never changed.
+# Display-only fitting. Filesystem paths and filenames are never altered.
 fit(){
-    local s=${1-} w=${2:-$WIDTH} left right keep
-    ((w < 4)) && { printf '%.*s' "$w" "$s"; return; }
+    local s=${1-} w=${2:-$WIDTH}
     (( ${#s} <= w )) && { printf '%s' "$s"; return; }
-    keep=$((w-3)); left=$((keep/2)); right=$((keep-left))
-    printf '%s...%s' "${s:0:left}" "${s: -right}"
+    printf '%s' "${s:0:w}"
+}
+
+# Wrap long text into complete terminal-width lines. Nothing is discarded.
+wrap_lines(){
+    local text=${1-} width=${2:-$WIDTH} line rest
+    while ((${#text}>width)); do
+        line="${text:0:width}"
+        printf '%s\n' "$line"
+        text="${text:width}"
+    done
+    printf '%s\n' "$text"
+}
+
+# Render the artist context using as many rows as required. The rest of the UI follows it.
+artist_context_rows(){
+    local artist=${1-} album_no=${2-} album_total=${3-} track_no=${4-} track_total=${5-}
+    local context="Artist: $artist > Album ${album_no}/${album_total} > Track ${track_no}/${track_total} >"
+    local -a lines=() line; local i=0
+    while IFS= read -r line; do lines+=("$line"); done < <(wrap_lines "$context" "$WIDTH")
+    ((${#lines[@]}<1))&&lines=('Artist:')
+    for line in "${lines[@]}"; do put "$((ARTIST_ROWS+i))" "$line"; i=$((i+1)); done
+    # Clear stale rows left by a previous, longer context.
+    while ((i<3)); do clr "$((ARTIST_ROWS+i))"; i=$((i+1)); done
+    printf '%s' "${#lines[@]}"
+}
+
+ui_rows_for_artist(){
+    local n=${1:-1}
+    FILENAME_ROW=$((n+1)); BAR_ROW=$((n+2)); ENCODING_ROW=$((n+3)); SIZE_ROW=$((n+4))
+    DUR_ROW=$((n+5)); ELAPSED_ROW=$((n+6)); ETA_ROW=$((n+7)); OVERALL_BAR_ROW=$((n+9)); OVERALL_TEXT_ROW=$((n+10))
 }
 
 hsize(){ awk -v b="${1:-0}" 'BEGIN{split("B KiB MiB GiB TiB",u);i=1;while(b>=1024&&i<5){b/=1024;i++};printf(i==1?"%.0f %s":"%.1f %s",b,u[i])}'; }
@@ -54,56 +90,66 @@ bar(){
     printf '%*s' "$filled" ''|tr ' ' '#'; printf '%*s' "$empty" ''|tr ' ' '-'
 }
 summary_bar(){ bar "$1" "$2"; }
-clear_transition(){ for r in 1 2 3; do clr "$r"; done; }
+clear_transition(){ clear_screen; }
 
-# Long paths are fitted only for display, preventing terminal wrapping from corrupting the UI.
 greeting(){
     clear_screen; WIDTH="$(terminal_width)"
     put 1 "Source      : $(fit "$SOURCE_ROOT" $((WIDTH-15)))"
     put 2 "Destination : $(fit "$DEST_ROOT" $((WIDTH-15)))"
     put 3 ''
-    put "$ARTIST_ROW" 'Artist:'; move "$ARTIST_ROW" 8; show
+    put 4 'Artist:'; move 4 8; show
 }
 
 scan_frame(){
     local artist=${1-} total=${2-0} albums=${3-0} current=${4-}
-    put "$ARTIST_ROW" "Artist: $(fit "$artist" $((WIDTH-8)))"
-    put 5 ''; put 6 'Scanning...'; put 7 "$(fit "$current" "$WIDTH")"
-    put 8 ''; put 9 "Found: $total tracks"; put 10 "       $albums albums"
+    clear_screen
+    put 1 "Artist: $(fit "$artist" $((WIDTH-8)))"
+    put 2 'Scanning...'
+    put 3 "$(fit "$current" "$WIDTH")"
+    put 5 "Found: $total tracks"
+    put 6 "       $albums albums"
 }
-
-context(){ fit "Artist: ${1-} > Album ${2-}/${3-} > Track ${4-}/${5-} >" "$WIDTH"; }
 
 conversion_static(){
     local artist=${1-} an=${2-} at=${3-} tn=${4-} tt=${5-0} file=${6-} dur=${7-}
-    put "$ARTIST_ROW" "$(context "$artist" "$an" "$at" "$tn" "$tt")"
-    put "$FILENAME_ROW" "$(fit "$file" "$WIDTH")"; put "$BAR_ROW" ''
-    put "$ENCODING_ROW" '0% Complete'; put "$BITRATE_ROW" 'Bitrate:         0.0 Mbit/s'
-    put "$SIZE_ROW" 'Size:            0 B / 0 B'; put "$DUR_ROW" "Track Duration:  $dur"
-    put "$ELAPSED_ROW" 'Elapsed:         00m00s'; put "$ETA_ROW" 'ETA:             --'
-    put 13 ''; put "$OVERALL_BAR_ROW" ''; put "$OVERALL_TEXT_ROW" 'Overall 0% Complete'
+    local n
+    clear_screen
+    n=$(artist_context_rows "$artist" "$an" "$at" "$tn" "$tt")
+    ui_rows_for_artist "$n"
+    put "$FILENAME_ROW" "$(fit "$file" "$WIDTH")"
+    put "$BAR_ROW" ''
+    put "$ENCODING_ROW" '0% Complete (@256kbit/s)'
+    put "$SIZE_ROW" 'Size:            0 B / 0 B'
+    put "$DUR_ROW" "Track Duration:  $dur"
+    put "$ELAPSED_ROW" 'Elapsed:         00m00s'
+    put "$ETA_ROW" 'ETA:             --'
+    put "$((ETA_ROW+1))" ''
+    put "$OVERALL_BAR_ROW" ''
+    put "$OVERALL_TEXT_ROW" 'Overall 0% Complete'
 }
 
 conversion_dynamic(){
-    local pct=${1:-0} overall=${2:-0} bitrate_raw=${3:-0} size=${4:---} elapsed=${5:---} eta=${6:---} dur=${7:---} bitrate_mbit
-    bitrate_mbit=$(awk -v b="${bitrate_raw:-0}" 'BEGIN{if(b+0>0)printf "%.1f Mbit/s",(b+0)/1000000;else printf "0.0 Mbit/s"}')
+    local pct=${1:-0} overall=${2:-0} bitrate_raw=${3:-0} size=${4:---} elapsed=${5:---} eta=${6:---} dur=${7:---}
     clr "$BAR_ROW"; move "$BAR_ROW" 1; bar "$pct" "$WIDTH"
-    put "$ENCODING_ROW" "${pct}% Complete"; val "$BITRATE_ROW" 18 24 "$bitrate_mbit"
-    val "$SIZE_ROW" 18 32 "$size"; val "$DUR_ROW" 18 16 "$dur"
-    val "$ELAPSED_ROW" 18 12 "$elapsed"; val "$ETA_ROW" 18 12 "$eta"
+    put "$ENCODING_ROW" "${pct}% Complete (@256kbit/s)"
+    val "$SIZE_ROW" 18 32 "$size"
+    val "$DUR_ROW" 18 16 "$dur"
+    val "$ELAPSED_ROW" 18 12 "$elapsed"
+    val "$ETA_ROW" 18 12 "$eta"
     clr "$OVERALL_BAR_ROW"; move "$OVERALL_BAR_ROW" 1; summary_bar "$overall" "$WIDTH"
     put "$OVERALL_TEXT_ROW" "Overall ${overall}% Complete"
 }
 
 summary_frame(){
     local artist=${1-} elapsed=${2-} done=${3-0} total=${4-0} failed=${5-0} skipped=${6-0} embedded=${7-0} copied=${8-0} extras=${9-0} src=${10-} dst=${11-} reduced=${12-} pct=${13-0}
-    clear_transition; put "$ARTIST_ROW" "Artist: $(fit "$artist" $((WIDTH-8)))"; put 5 ''
-    put 6 "$elapsed elapsed"; put 7 "> 100% [$done/$total]"; put 8 "> [$failed] failed ; [$skipped] skipped"
-    put 9 "> [$embedded/$total] images embedded"; put 10 "> [$copied/$extras] extra files copied"; put 11 ''
-    put 12 "[$src] Source FLACs + extras"; clr 13; move 13 1; summary_bar 100 "$WIDTH"
-    put 14 "[$dst] Converted MP3s + extras"; clr 15; move 15 1; summary_bar "$pct" "$WIDTH"
-    put 16 "> $reduced reduced"; put 18 '----------------------------------------'; put 20 '[C] Convert another artist'; put 21 '[Q] Quit'
-    [[ -s "$LAST_ERROR_LOG" ]]&&put 22 '[V] View error log'||clr 22
+    clear_screen
+    put 1 "Artist: $(fit "$artist" $((WIDTH-8)))"
+    put 3 "$elapsed elapsed"; put 4 "> 100% [$done/$total]"; put 5 "> [$failed] failed ; [$skipped] skipped"
+    put 6 "> [$embedded/$total] images embedded"; put 7 "> [$copied/$extras] extra files copied"; put 8 ''
+    put 9 "[$src] Source FLACs + extras"; clr 10; move 10 1; summary_bar 100 "$WIDTH"
+    put 11 "[$dst] Converted MP3s + extras"; clr 12; move 12 1; summary_bar "$pct" "$WIDTH"
+    put 13 "> $reduced reduced"; put 15 '----------------------------------------'; put 17 '[C] Convert another artist'; put 18 '[Q] Quit'
+    [[ -s "$LAST_ERROR_LOG" ]]&&put 19 '[V] View error log'||clr 19
 }
 
 trim_input(){
@@ -124,7 +170,7 @@ find_artist(){
 
 convert_track(){
     local src=$1 dst=$2 dur_us=$3 artist=$4 an=$5 at=$6 tn=$7 tt=$8 before=$9 start=${10} log=${11}
-    local pfile efile pid status pct overall size elapsed eta current_bytes total_bytes out_us time_pct dur name bitrate_raw
+    local pfile efile pid status pct overall size elapsed eta current_bytes total_bytes out_us time_pct dur name
     pfile=$(mktemp); efile=$(mktemp); dur=$(hdur "$(duration "$src")"); name=${src##*/}; mkdir -p "${dst%/*}"
     total_bytes=$(awk -v us="$dur_us" 'BEGIN{printf "%.0f",(us/1000000)*256000/8+2048}'); ((total_bytes<1))&&total_bytes=1
     conversion_static "$artist" "$an" "$at" "$tn" "$tt" "$name" "$dur"
@@ -134,10 +180,9 @@ convert_track(){
         out_us=$(awk -F= '/^out_time_us=/{v=$2} END{print v+0}' "$pfile" 2>/dev/null); [[ $out_us =~ ^[0-9]+$ ]]||out_us=0
         if ((pct==0&&out_us>0&&dur_us>0)); then time_pct=$((out_us*100/dur_us)); ((time_pct>99))&&time_pct=99; pct=$time_pct; fi
         overall=$(( (before*100+pct)/tt )); ((overall>100))&&overall=100
-        bitrate_raw=$(awk -F= '/^bitrate=/{v=$2} END{print v+0}' "$pfile" 2>/dev/null); [[ $bitrate_raw =~ ^[0-9]+([.][0-9]+)?$ ]]||bitrate_raw=0
         size="$(hsize "$current_bytes") / $(hsize "$total_bytes")"; elapsed=$(( $(date +%s)-start )); eta=0
         ((before*100+pct>0))&&eta=$((elapsed*(tt*100-before*100-pct)/(before*100+pct)))
-        conversion_dynamic "$pct" "$overall" "$bitrate_raw" "$size" "$(hdur "$elapsed")" "$(hdur "$eta")" "$dur"
+        conversion_dynamic "$pct" "$overall" 256000000 "$size" "$(hdur "$elapsed")" "$(hdur "$eta")" "$dur"
         if ! kill -0 "$pid" 2>/dev/null; then wait "$pid"; status=$?; break; fi
         sleep .20
     done
@@ -157,7 +202,7 @@ run_artist(){
     mkdir -p "$out"
     while IFS= read -r -d '' file; do tracks+=("$file"); done < <(find "$dir" -type f -iname '*.flac' -print0|sort -z)
     total=${#tracks[@]}
-    ((total>0))||{ clear_screen; printf '\nArtist: %s\n\nNo FLAC tracks found in:\n%s\n\n' "$artist" "$(fit "$dir" "$WIDTH")"; return; }
+    ((total>0))||{ clear_screen; printf '\nArtist: %s\n\nNo FLAC tracks found in:\n%s\n\n' "$artist" "$dir"; return; }
     for file in "${tracks[@]}"; do
         rel=${file#"$dir"/}; album=${rel%/*}; [[ "$album" == "$rel" ]]&&album=Singles
         [[ -n ${albums[$album]+x} ]]||{ album_total=$((album_total+1)); albums[$album]=1; album_no[$album]=$album_total; }
@@ -185,7 +230,7 @@ main(){
     while true; do
         greeting; IFS= read -r artist; show; artist="$(trim_input "$artist")"; [[ -z "$artist" ]]&&continue; hide
         if [[ ! -d "$SOURCE_ROOT" ]]; then
-            clear_screen; printf 'Source      : %s\nDestination : %s\n\nSource directory does not exist:\n%s\n\nPress Enter to continue.' "$(fit "$SOURCE_ROOT" "$WIDTH")" "$(fit "$DEST_ROOT" "$WIDTH")" "$(fit "$SOURCE_ROOT" "$WIDTH")"; read -r _; continue
+            clear_screen; printf 'Source      : %s\nDestination : %s\n\nSource directory does not exist:\n%s\n\nPress Enter to continue.' "$(fit "$SOURCE_ROOT" "$WIDTH")" "$(fit "$DEST_ROOT" "$WIDTH")" "$SOURCE_ROOT"; read -r _; continue
         fi
         if ! dir=$(find_artist "$artist"); then
             clear_screen; printf 'Source      : %s\nDestination : %s\n\nArtist not found:\n%s\n\nPress Enter to continue.' "$(fit "$SOURCE_ROOT" "$WIDTH")" "$(fit "$DEST_ROOT" "$WIDTH")" "$artist"; read -r _; continue
