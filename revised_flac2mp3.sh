@@ -29,6 +29,7 @@ ELAPSED_ROW=7
 ETA_ROW=8
 OVERALL_BAR_ROW=10
 OVERALL_TEXT_ROW=11
+ARTIST_CONTEXT_COUNT=1
 
 clear_screen(){ printf '\033[2J\033[H'; }
 hide(){ printf '\033[?25l'; }
@@ -48,7 +49,7 @@ fit(){
 
 # Wrap long text into complete terminal-width lines. Nothing is discarded.
 wrap_lines(){
-    local text=${1-} width=${2:-$WIDTH} line rest
+    local text=${1-} width=${2:-$WIDTH} line
     while ((${#text}>width)); do
         line="${text:0:width}"
         printf '%s\n' "$line"
@@ -57,17 +58,22 @@ wrap_lines(){
     printf '%s\n' "$text"
 }
 
-# Render the artist context using as many rows as required. The rest of the UI follows it.
+# Render the artist context using as many rows as required.
+# IMPORTANT: output from put() is terminal control output, so the row count is
+# returned through a global rather than command substitution.
 artist_context_rows(){
     local artist=${1-} album_no=${2-} album_total=${3-} track_no=${4-} track_total=${5-}
     local context="Artist: $artist > Album ${album_no}/${album_total} > Track ${track_no}/${track_total} >"
-    local -a lines=() line; local i=0
+    local -a lines=() line
+    local i=0
     while IFS= read -r line; do lines+=("$line"); done < <(wrap_lines "$context" "$WIDTH")
     ((${#lines[@]}<1))&&lines=('Artist:')
-    for line in "${lines[@]}"; do put "$((ARTIST_ROWS+i))" "$line"; i=$((i+1)); done
-    # Clear stale rows left by a previous, longer context.
+    for line in "${lines[@]}"; do
+        put "$((ARTIST_ROWS+i))" "$line"
+        i=$((i+1))
+    done
     while ((i<3)); do clr "$((ARTIST_ROWS+i))"; i=$((i+1)); done
-    printf '%s' "${#lines[@]}"
+    ARTIST_CONTEXT_COUNT=${#lines[@]}
 }
 
 ui_rows_for_artist(){
@@ -112,10 +118,9 @@ scan_frame(){
 
 conversion_static(){
     local artist=${1-} an=${2-} at=${3-} tn=${4-} tt=${5-0} file=${6-} dur=${7-}
-    local n
     clear_screen
-    n=$(artist_context_rows "$artist" "$an" "$at" "$tn" "$tt")
-    ui_rows_for_artist "$n"
+    artist_context_rows "$artist" "$an" "$at" "$tn" "$tt"
+    ui_rows_for_artist "$ARTIST_CONTEXT_COUNT"
     put "$FILENAME_ROW" "$(fit "$file" "$WIDTH")"
     put "$BAR_ROW" ''
     put "$ENCODING_ROW" '0% Complete (@256kbit/s)'
